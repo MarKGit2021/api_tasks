@@ -15,13 +15,25 @@ def find(text):
     response = requests.get(geocoder_api_server, params=geocoder_params)
 
     json_response = response.json()
+    try:
+        address = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"][
+                    "GeocoderMetaData"]["Address"]["formatted"]
+    except:
+        address = 'error'
+    try:
+        postal_code = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"][
+            "GeocoderMetaData"]["Address"]["postal_code"]
+    except:
+        postal_code = 'none'
+
+
     toponym = json_response["response"]["GeoObjectCollection"][
         "featureMember"][0]["GeoObject"]
     # Координаты центра топонима:
     toponym_coodrinates = toponym["Point"]["pos"]
     # Долгота и широта:
     toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
-    return toponym_longitude, toponym_lattitude
+    return toponym_longitude, toponym_lattitude, address, postal_code
 
 
 if __name__ == '__main__':
@@ -45,7 +57,11 @@ if __name__ == '__main__':
     text = ''
     font = pygame.font.SysFont('arial', 20)
     font2 = pygame.font.SysFont('arial', 14)
+    font3 = pygame.font.SysFont('arial', 14, bold=True)
     pt = False
+    address = ''
+    post = True
+    postal_code = ''
     while run:
 
         for event in pygame.event.get():
@@ -136,20 +152,28 @@ if __name__ == '__main__':
                     elif event.key == pygame.K_SPACE:
                         text += ' '
                 elif event.key == pygame.K_RETURN:
-                    lon, lat = find(text)
+                    lon, lat, address, postal_code = find(text)
                     delta = '0.005'
                     pt = True
                     ptlon = lon
                     ptlat = lat
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                print(400 < x < 460, )
                 if 400 < x < 460 and 5 < y < 30:
                     map = 'map'
                 elif 465 < x < 525 and 5 < y < 30:
                     map = 'sat'
                 elif 530 < x < 590 and 5 < y < 30:
                     map = 'sat,skl'
+                elif 470 < x < 530 and 420 < y < 445:
+                    pt = False
+                    text = ''
+                    address = ''
+                    postal_code = ''
+                elif 267 < x < 296 and 382 < y < 408:
+                    post = True
+                elif 297 < x < 336 and 382 < y < 408:
+                    post = False
 
         if pt:
             params = {
@@ -175,16 +199,38 @@ if __name__ == '__main__':
         pygame.draw.rect(screen, (0, 0, 0), (10, 10, 200, 30), width=2)
         text_surf = font.render(text, True, (0, 0, 0))
         screen.blit(text_surf, (13, 13))
+        # Поле вывода
+        pygame.draw.rect(screen, (0, 0, 0), (10, 419, 250, 30), width=2)
+        if post:
+            text_surf4 = font3.render(address + ', ' + postal_code, True, (0, 0, 0))
+        else:
+            text_surf4 = font3.render(address, True, (0, 0, 0))
+        text_surf5 = font.render("Полный адрес", True, (0, 0, 0))
+        screen.blit(text_surf4, (13, 420))
+        screen.blit(text_surf5, (13, 385))
         # Кнопки
         pygame.draw.rect(screen, (0, 0, 0), (400, 5, 60, 25), width=2)
         pygame.draw.rect(screen, (0, 0, 0), (465, 5, 60, 25), width=2)
         pygame.draw.rect(screen, (0, 0, 0), (530, 5, 60, 25), width=2)
+        pygame.draw.rect(screen, (0, 0, 0), (466, 417, 60, 25), width=2)
+        pygame.draw.rect(screen, (0, 0, 0), (267, 382, 29, 25), width=2)
+        pygame.draw.rect(screen, (0, 0, 0), (297, 382, 39, 25), width=2)
         text_surf1 = font2.render('Схема', True, (0, 0, 0))
         screen.blit(text_surf1, (410, 7))
         text_surf2 = font2.render('Спутник', True, (0, 0, 0))
         screen.blit(text_surf2, (470, 7))
         text_surf3 = font2.render('Гибрид', True, (0, 0, 0))
         screen.blit(text_surf3, (535, 7))
+        text_surf3 = font2.render('Сброс', True, (0, 0, 0))
+        screen.blit(text_surf3, (470, 420))
+
+        text_surf6 = font2.render('Вкл', True, (0, 0, 0))
+        screen.blit(text_surf6, (270, 385))
+        text_surf7 = font2.render('Выкл', True, (0, 0, 0))
+        screen.blit(text_surf7, (300, 385))
+
+        text_surf8 = font2.render('Postal_code:', True, (0, 0, 0))
+        screen.blit(text_surf8, (260, 365))
 
         pygame.display.flip()
         clock.tick(60)
