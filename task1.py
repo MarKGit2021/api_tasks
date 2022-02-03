@@ -9,7 +9,7 @@ spn = ['0.04', '0.04']
 coor = ['37.530887', '55.703118']
 
 
-def search(address):
+def search(address, pt=False):
     global coor
     geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
 
@@ -25,12 +25,14 @@ def search(address):
         "featureMember"][0]["GeoObject"]
     toponym_coodrinates = toponym["Point"]["pos"]
     coor = toponym_coodrinates.split(" ")
-    load_map()
+    load_map(pt=True)
 
 
-def load_map():
+def load_map(pt=False):
     map_request = f"http://static-maps.yandex.ru/1.x/?ll={','.join(coor)}&" \
                   f"spn={','.join(spn)}&size={','.join(size)}&l=map"
+    if pt:
+        map_request += f"&pt={','.join(coor)},pm2rdl1"
     response = requests.get(map_request)
 
     map_file = "map.png"
@@ -74,7 +76,7 @@ while res:
                 screen.blit(pygame.image.load('map.png'), (0, 0))
                 pygame.display.flip()
             if i.key == pygame.K_KP_ENTER or i.key == pygame.K_RETURN:
-                search(word)
+                search(word, pt=True)
                 screen.blit(pygame.image.load('map.png'), (0, 0))
                 pygame.display.flip()
             word = func(screen, word, i.key)
