@@ -21,7 +21,6 @@ if __name__ == '__main__':
         "l": "map"
     }
 
-
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -62,7 +61,49 @@ if __name__ == '__main__':
                         else:
                             delta = str(round(float(delta) - 0.5, 2))
                             response = requests.get(api_server, params=params)
-
+                elif event.key == pygame.K_UP:
+                    print(delta)
+                    if float(lat) < 84:
+                        if float(delta) < 3:
+                            lat = str(float(lat) + 0.01)
+                            response = requests.get(api_server, params=params)
+                        elif 3 <= float(delta) < 10:
+                            lat = str(float(lat) + 0.1)
+                            response = requests.get(api_server, params=params)
+                        else:
+                            lat = str(float(lat) + 0.5)
+                            response = requests.get(api_server, params=params)
+                elif event.key == pygame.K_DOWN:
+                    if float(lat) > -84:
+                        if float(delta) < 3:
+                            lat = str(float(lat) - 0.01)
+                            response = requests.get(api_server, params=params)
+                        elif 3 <= float(delta) < 10:
+                            lat = str(float(lat) - 0.1)
+                            response = requests.get(api_server, params=params)
+                        else:
+                            lat = str(float(lat) - 0.5)
+                            response = requests.get(api_server, params=params)
+                elif event.key == pygame.K_LEFT:
+                    if float(delta) < 3:
+                        lon = str(float(lon) - 0.01)
+                        response = requests.get(api_server, params=params)
+                    elif 3 <= float(delta) < 10:
+                        lon = str(float(lon) - 0.1)
+                        response = requests.get(api_server, params=params)
+                    else:
+                        lon = str(float(lon) - 0.5)
+                        response = requests.get(api_server, params=params)
+                elif event.key == pygame.K_RIGHT:
+                    if float(delta) < 3:
+                        lon = str(float(lon) + 0.01)
+                        response = requests.get(api_server, params=params)
+                    elif 3 <= float(delta) < 10:
+                        lon = str(float(lon) + 0.1)
+                        response = requests.get(api_server, params=params)
+                    else:
+                        lon = str(float(lon) + 0.5)
+                        response = requests.get(api_server, params=params)
 
         params = {
             "ll": ",".join([lon, lat]),
