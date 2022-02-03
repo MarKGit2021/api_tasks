@@ -40,8 +40,8 @@ def load_map():
 
 load_map()
 pygame.init()
-screen = pygame.display.set_mode((450, 650))
-screen.fill((0,0,0))
+screen = pygame.display.set_mode((450, 575))
+screen.fill((0, 0, 0))
 screen.blit(pygame.image.load('map.png'), (0, 0))
 pygame.display.flip()
 res = True
@@ -71,6 +71,10 @@ while res:
             if i.key == pygame.K_RIGHT:
                 coor[0] = str(float(coor[0]) - float(spn[0]))
                 load_map()
+                screen.blit(pygame.image.load('map.png'), (0, 0))
+                pygame.display.flip()
+            if i.key == pygame.K_KP_ENTER or i.key == pygame.K_RETURN:
+                search(word)
                 screen.blit(pygame.image.load('map.png'), (0, 0))
                 pygame.display.flip()
             word = func(screen, word, i.key)
