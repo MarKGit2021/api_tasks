@@ -27,7 +27,8 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_PAGEUP:
+                    print('up')
                     if 0.05 >= float(delta) >= 0.01:
                         delta = str(round(float(delta) + 0.02, 2))
                         response = requests.get(api_server, params=params)
@@ -43,7 +44,8 @@ if __name__ == '__main__':
                     else:
                         delta = str(round(float(delta) + 0.5, 2))
                         response = requests.get(api_server, params=params)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_PAGEDOWN:
+                    print('down')
                     if float(delta) - 0.01 > 0:
                         if 0.05 >= float(delta) >= 0.01:
                             delta = str(round(float(delta) - 0.02, 2))
