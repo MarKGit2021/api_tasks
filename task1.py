@@ -33,20 +33,28 @@ while res:
             print('tyt', i.key)
             if i.key == pygame.K_UP and float(coor[1]) > -50:
                 print(coor)
-                coor[1] = str(float(coor[1]) + (float(size[1]) * float(spn[1]) * 0.002))
+                coor[1] = str(float(coor[1]) + float(spn[1]))
                 print(coor)
                 load_map()
                 screen.blit(pygame.image.load('map.png'), (0, 0))
                 pygame.display.flip()
             if i.key == pygame.K_DOWN:
                 print(coor)
-                coor[1] = str(float(coor[1]) - (float(size[1]) * float(spn[1]) * 0.002))
+                coor[1] = str(float(coor[1]) - float(spn[1]))
                 print(coor)
                 load_map()
                 screen.blit(pygame.image.load('map.png'), (0, 0))
                 pygame.display.flip()
-
-
+            if i.key == pygame.K_LEFT:
+                coor[0] = str(float(coor[0]) + float(spn[0]))
+                load_map()
+                screen.blit(pygame.image.load('map.png'), (0, 0))
+                pygame.display.flip()
+            if i.key == pygame.K_RIGHT:
+                coor[0] = str(float(coor[0]) - float(spn[0]))
+                load_map()
+                screen.blit(pygame.image.load('map.png'), (0, 0))
+                pygame.display.flip()
 
 pygame.quit()
 os.remove('map.png')
